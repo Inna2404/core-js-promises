@@ -85,7 +85,7 @@ function getFirstResolvedPromiseResult(promises) {
  * [promise3, promise4, promise6] => Promise rejected with 6
  */
 function getFirstPromiseResult(promises) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     let settled = false;
 
     promises.forEach((promise) => {
@@ -96,7 +96,12 @@ function getFirstPromiseResult(promises) {
             resolve(result);
           }
         })
-        .catch(() => {});
+        .catch((err) => {
+          if (!settled) {
+            settled = true;
+            reject(err);
+          }
+        });
     });
   });
 }
